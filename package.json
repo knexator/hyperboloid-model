@@ -1,6 +1,6 @@
 {
   "name": "hyperboloid-model",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Model for hyperbolic geometry",
   "main": "index.js",
   "scripts": {
