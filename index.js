@@ -224,11 +224,11 @@ exports.translationBetweenPoints = function(out, pointA, pointB) {
 exports.rotAroundPoint = function(out, point, angle) {
   mats.mat3.identity(out);
   let p_to_q = mats.mat3.create();
-  exports.translationBetweenPoints(p_to_q, origin, point);
+  exports.translationBetweenPoints(p_to_q, exports.origin, point);
   let rotation = mats.mat3.create();
   exports.rot(rotation, angle);
   let q_to_p = mats.mat3.create();
-  exports.translationBetweenPoints(q_to_p, point, origin);
+  exports.translationBetweenPoints(q_to_p, point, exports.origin);
   mats.mat3.mul(out, rotation, p_to_q);
   return mats.mat3.mul(out, q_to_p, out);
   //return matrixFromPtoQ(origin, p) @ rotAroundOrigin(angle) @ matrixFromPtoQ(p, origin);
@@ -241,7 +241,7 @@ exports.toPoincare = function(point) {
 exports.fromPoincare = function(x, y) {
   let sq = x*x + y*y;
   if (sq >= 1) {
-    throw Error("Point not in the poincare circle");
+    throw new Error("Point not in the poincare circle");
   }
   return mats.vec3.fromValues(2*x/(1-sq), 2*y/(1-sq), (1+sq)/(1-sq));
 }
