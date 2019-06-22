@@ -95,7 +95,7 @@ exports.idealsAtInfinity = function(outA, outB, line) {
   # ((v.w - v.y*y)/v.x)**2 + y**2 = 1  gives us y,
   # v.w**2 - 2*v.w*v.y*y + (v.x*v.x+v.y*v.y)*y*y = v.x*v.x*/
   if (exports.type(line) == -1) {
-    throw new Error("line is a point, in ideals_at_infinity");
+    throw new Error("line is a point, in idealsAtInfinity");
   }
   
   let line_n = mats.vec3.fromValues(line[0], line[1], -line[2]);
@@ -106,7 +106,7 @@ exports.idealsAtInfinity = function(outA, outB, line) {
     let c = line_n[2]*line_n[2] - line_n[0]*line_n[0];
     let disc = b*b - 4*a*c;
     if (disc < 0) {
-      throw new Error("negative discriminant at ideals_at_infinity");
+      throw new Error("negative discriminant at idealsAtInfinity");
     } else {
       let order = Math.sign(line_n[0]);
       let y1 = (-b + order*Math.sqrt(disc)) / (2*a);
@@ -121,7 +121,7 @@ exports.idealsAtInfinity = function(outA, outB, line) {
     let c = line_n[2]*line_n[2] - line_n[1]*line_n[1];
     let disc = b*b - 4*a*c;
     if (disc < 0) {
-      throw new Error("negative discriminant at ideals_at_infinity");
+      throw new Error("negative discriminant at idealsAtInfinity");
     } else {
       let order = Math.sign(line_n[1]);
       let x1 = (-b + order*Math.sqrt(disc)) / (2*a);
@@ -131,7 +131,7 @@ exports.idealsAtInfinity = function(outA, outB, line) {
       return [mats.vec3.set(outA, x1, y1, 1), mats.vec3.set(outB, x2, y2, 1)];
     }
   } else {
-    throw new Error("Unexpected value, in ideals_at_infinity");
+    throw new Error("Unexpected value, in idealsAtInfinity");
   }
 }
 
@@ -160,6 +160,17 @@ exports.dist = function(a, b) {
     }
   }
   // TODO: handle cases for ideal points
+}
+
+exports.distToOrigin = function(a) {
+  let type = exports.type(a);
+  if (type == -1) {
+    return Math.acosh(Math.abs(a[2]));
+  } else if (type == 1) {
+    return Math.asinh(a[2]);
+  } else {
+    return Math.infinity; // Unhandled :(
+  }
 }
 
 exports.hlerp = function(out, pointA, pointB, t) {
@@ -199,7 +210,7 @@ exports.translationAlongLine = function(out, line, distance) {
   exports.normalize(lineA, line);
   let lineB = mats.vec3.create();
   let lineC = mats.vec3.create();
-  exports.ideals_at_infinity(lineB, lineC, line);
+  exports.idealsAtInfinity(lineB, lineC, line);
   
   let c = Math.cosh(distance);
   let s = Math.sinh(distance);
