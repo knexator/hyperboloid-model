@@ -4,7 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-const mats = require('gl-matrix')
+const mats = require('gl-matrix');
+mats.glMatrix.setMatrixArrayType(Float64Array);
 
 mats.mat3.getRow = function(out, mat, i) {
   return mats.vec3.set(out, mat[0+i], mat[3+i], mat[6+i]);
