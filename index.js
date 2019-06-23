@@ -142,7 +142,12 @@ exports.dist = function(a, b) {
   
   if (a_type == -1 && b_type == -1) { // both points
     // Distance between two points
-    return Math.acosh(-dot);
+    if (Math.abs(dot) >= 1) {
+      return Math.acosh(Math.abs(dot));
+    } else {
+      return 0;
+    }
+    //return Math.acosh(-dot);
   }
   if (a_type == -1 && b_type == 1) { // point and line
     return Math.asinh(dot);
@@ -212,14 +217,21 @@ exports.translationAlongLine = function(out, line, distance) {
   let lineC = mats.vec3.create();
   exports.idealsAtInfinity(lineB, lineC, line);
   
+  /*console.log('lineA', lineA)
+  console.log('lineB', lineB)
+  console.log('lineC', lineC)*/
+  
   let c = Math.cosh(distance);
   let s = Math.sinh(distance);
-  let M = mats.mat3.fromValues(1, 0, 0,  0, c-s, 0,  0, 0, c+s);
+  let M = mats.mat3.fromValues(1, 0, 0,  0, c+s, 0,  0, 0, c-s);
   let S = mats.mat3.fromValues(...lineA, ...lineB, ...lineC);
   let R = mats.mat3.create();
   mats.mat3.invert(R, S);
-  mats.mat3.mul(M, M, R);
-  return mats.mat3.mul(out, S, M);
+  let temp = mats.mat3.create();
+  mats.mat3.mul(temp, M, R);
+  //let tempA = mats.mat3.mul(mats.mat3.create(), M, R);
+  //let tempB = mats.mat3.mul(mats.mat3.create(), S, tempA);  
+  return mats.mat3.mul(out, S, temp);
 }
 
 exports.translationBetweenPoints = function(out, pointA, pointB) {
@@ -229,7 +241,7 @@ exports.translationBetweenPoints = function(out, pointA, pointB) {
   let line = mats.vec3.create();
   exports.lineJoiningPoints(line, pointA, pointB);
   let distance = exports.dist(pointA, pointB);
-  return exports.translationAlongLine(out, line, distance);
+  return exports.translationAlongLine(out, line, -distance);
 }
 
 exports.rotAroundPoint = function(out, point, angle) {
